@@ -2,8 +2,11 @@
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { TiDelete } from 'react-icons/ti'
+import { useTransition } from "react"
+import { deleteTicket } from "../actions"
 
 const DeleteButton = ({ id }) => {
+    const [isPending, startTransition] = useTransition()
     const [isLoading, setIsLoading] = useState(false)
     const router = useRouter()
 
@@ -30,16 +33,16 @@ const DeleteButton = ({ id }) => {
     return (
         <button 
             className="btn-primary"
-            onClick={handleClick}
-            disabled={isLoading}
+            onClick={() => startTransition(() => deleteTicket(id))}
+            disabled={isPending}
         >
-            {isLoading && (
+            {isPending && (
                 <>
                     <TiDelete />
                     Deleting...
                 </>
             )}
-            {!isLoading && (
+            {!isPending && (
                  <>
                  <TiDelete />
                  Delete Ticket
